@@ -29,10 +29,10 @@ public class EnemyAI : MonoBehaviour
         action = GetComponent<EnemyAction>();
         state = GetComponent<EnemyState>();
         playerTF = GameObject.Find("Player").GetComponent<Transform>() ;
-        GridBuildingSystem.OnPlaced += UpdateNodes;
+        BuildingGrid.OnPlaced += UpdateNodes;
     }
 
-    private void UpdateNodes(object sender, GridBuildingSystem.OnPlacedEventArgs e)
+    private void UpdateNodes(object sender, BuildingGrid.OnPlacedEventArgs e)
     {
         enemyMovement.CalculateNodes(transform.position, playerTF.position);
         enemyMovement.x = 0;

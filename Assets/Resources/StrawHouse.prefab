@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 4822076318384096575}
   - component: {fileID: 1342828369410085402}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: StrawHouse
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

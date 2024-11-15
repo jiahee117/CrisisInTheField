@@ -9,6 +9,11 @@ public class StrawHouseBuildingType : MonoBehaviour
     private int WoodGeneratedInOneTime = 1;
     public Vector2Int[] RecordLocations;
 
+    void Start(){
+       BuildingData = Resources.Load<BuildingData>("BuildingType");
+
+    }
+
     public int GenerateResource()
     {
         return WoodGeneratedInOneTime;

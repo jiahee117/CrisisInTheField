@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class GridBuildingSystem : MonoBehaviour
+public class BuildingGrid : MonoBehaviour
 {
     public Grid<GridObject> grid;
     public static event EventHandler<OnPlacedEventArgs> OnPlaced;
