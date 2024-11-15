@@ -9,8 +9,8 @@ using UnityEngine;
 
 public class GridBuildingSystem : MonoBehaviour
 {
+    public Grid<GridObject> grid;
     public static event EventHandler<OnPlacedEventArgs> OnPlaced;
-
     public class OnPlacedEventArgs : EventArgs
     {
         public Vector3 worldPos;
@@ -21,7 +21,7 @@ public class GridBuildingSystem : MonoBehaviour
 
 
     public GameObject prefab;
-    public Grid<GridObject> grid;
+    
     GridObject gridValue;
     private bool isSomethingOnGrid;
 
