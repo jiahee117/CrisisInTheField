@@ -8,7 +8,7 @@ public class StrawHBuilding : BuildingData
     
     public StrawHBuilding()
     {
-        buildingName = "";
+        buildingName = "StrawHouse";
 
         width = 2 ;
 

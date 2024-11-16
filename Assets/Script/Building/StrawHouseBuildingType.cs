@@ -5,12 +5,15 @@ using UnityEngine;
 
 public class StrawHouseBuildingType : MonoBehaviour
 {
-    public BuildingData BuildingData;
+    public BuildingData buildingData;
+    SpriteRenderer spriteRenderer;
     private int WoodGeneratedInOneTime = 1;
     public Vector2Int[] RecordLocations;
 
     void Start(){
-       BuildingData = Resources.Load<BuildingData>("BuildingType");
+       buildingData = Resources.Load<BuildingData>("BuildingType/StrawHouse");
+       spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+       spriteRenderer.sprite = buildingData.sprite;
 
     }
 
@@ -21,7 +24,7 @@ public class StrawHouseBuildingType : MonoBehaviour
 
     public Vector2Int[] GetAllLocation(int x, int y)
     {
-        RecordLocations = BuildingData.CalculateActualSizeNeeded(x, y);
+        RecordLocations = buildingData.CalculateActualSizeNeeded(x, y);
        
         return RecordLocations;
 

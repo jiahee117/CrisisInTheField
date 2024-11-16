@@ -23,5 +23,5 @@ MonoBehaviour:
   Health: 100
   damage: 0
   upgradelevel: 0
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 8c14ee8d071ddd142b7e5cd2086a7c23, type: 3}
   clip: {fileID: 0}
