@@ -19,40 +19,43 @@ public class BuildingGrid : MonoBehaviour
 
     }
 
+    public GameObject currentSelectedBuilding;
 
-    public GameObject prefab;
+    public Dictionary<string,GameObject> buildings;
     
-    GridObject gridValue;
-    private bool isSomethingOnGrid;
 
     // Start is called before the first frame update
     void Start()
     {
+        
         grid = new Grid<GridObject>(23, 17, 5, this.transform, (Grid<GridObject> g ,int x,int y )=> new GridObject(g,x,y) );
         new Pathfinding(30, 25, 5, null);
         grid.ShowTextArray();
         Pathfinding.Instance.OnPlaced += CheckWalkable;
-        EnemyMovement.OnGrid += CheckOnGrid;
     }
 
 
     // Update is called once per frame
     void Update()
     {
+        
+
         if (Input.GetMouseButtonDown(0))
         {
-            gridValue = grid.GetValue(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            GridObject gridValue = grid.GetValue(Camera.main.ScreenToWorldPoint(Input.mousePosition));
             
             if (gridValue == null) return;
             PlaceObject(gridValue);
-
-
         }
         if (Input.GetMouseButtonDown(1))
         {
             Remove();
             
         }
+        
+
+
+
 
         if(Input.GetKeyDown(KeyCode.M)) 
         {
@@ -107,7 +110,7 @@ public class BuildingGrid : MonoBehaviour
 
         if (gridValue.GetIsPlaced()) 
         {
-            Vector2Int[] locationsincluded = gridValue.GetGameObject().GetComponent<StrawHouseBuildingType>().RecordLocations;
+            Vector2Int[] locationsincluded = gridValue.GetGameObject().GetComponent<BuildingType>().RecordLocations;
 
             for (int i = 0; i < locationsincluded.Length; i++)
             {
@@ -130,15 +133,17 @@ public class BuildingGrid : MonoBehaviour
 
     void PlaceObject(GridObject gridObject)
     {
-        if (gridObject != null&&checkCanPlace()&& !isSomethingOnGrid)
+        if (gridObject != null&&checkCanPlace(gridObject))
         {
-            GameObject go = Instantiate<GameObject>(prefab, grid.GetWorldPosition(gridObject.GetPosition().x, gridObject.GetPosition().y), Quaternion.identity);
+            GameObject go = Instantiate<GameObject>(currentSelectedBuilding, grid.GetWorldPosition(gridObject.GetPosition().x, gridObject.GetPosition().y), Quaternion.identity);
             go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y, 0f);
             Vector3 scale = go.transform.localScale;
             go.transform.localScale = scale * grid.GetCellSize();
 
-            StrawHouseBuildingType strawHouseBuildingType = go.GetComponent<StrawHouseBuildingType>();
-            Vector2Int[] locationsincluded= strawHouseBuildingType.GetAllLocation(gridObject.GetPosition().x,gridObject.GetPosition().y);
+
+
+            BuildingType BuildingType = go.GetComponent<BuildingType>();
+            Vector2Int[] locationsincluded= BuildingType.GetAllLocation(gridObject.GetPosition().x,gridObject.GetPosition().y);
 
             for(int i = 0; i < locationsincluded.Length; i++)
             {
@@ -147,10 +152,6 @@ public class BuildingGrid : MonoBehaviour
                 PathNode pathNode = Pathfinding.Instance.grid.GetValue(grid.GetWorldPosition(gridObTemp.GetPosition().x, gridObTemp.GetPosition().y));
                 pathNode.walkable = false;
             }
-            
-            isSomethingOnGrid = false;
-
-
 
 
             if (OnPlaced != null) OnPlaced(this, new OnPlacedEventArgs());
@@ -158,19 +159,7 @@ public class BuildingGrid : MonoBehaviour
 
     }
 
-    private void CheckOnGrid(object sender, EnemyMovement.OnGridEventArgs e)
-    {
-        if (gridValue == null) return;
 
-        
-        if (e.pathNode.x == gridValue.GetPosition().x && e.pathNode.y == gridValue.GetPosition().y)
-        {
-            isSomethingOnGrid = true;
-        }
-
-
-
-    }
     private void CheckWalkable(object sender, Pathfinding.OnPlacedEventArgs e)
     {
         GridObject gridObject = grid.GetValue(e.pathNode.x, e.pathNode.y);
@@ -180,7 +169,7 @@ public class BuildingGrid : MonoBehaviour
         }
     }
 
-    bool checkCanPlace()
+    bool checkCanPlace(GridObject gridValue)
     {
 
 
