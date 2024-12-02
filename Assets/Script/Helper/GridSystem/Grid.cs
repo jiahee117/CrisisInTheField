@@ -103,8 +103,8 @@ public class Grid<T>
 
     public void SetValue(Vector3 pos, T value)
     {
-        int x = Mathf.FloorToInt((pos.x-originPos.x )/ size);
-        int y = Mathf.FloorToInt((pos.y - originPos.y)/ size);
+        int x = Mathf.FloorToInt((pos.x-refTF.position.x )/ size);
+        int y = Mathf.FloorToInt((pos.y - refTF.position.y)/ size);
 
         if ((x >= 0 && x < gridArray.GetLength(0)) && (y >= 0 && y < gridArray.GetLength(1)))
         {
@@ -118,9 +118,9 @@ public class Grid<T>
 
     public T GetValue(Vector3 pos)
     {
-        int x = Mathf.FloorToInt((pos.x - originPos.x) / size);
-        int y = Mathf.FloorToInt((pos.y - originPos.y) / size);
-
+        int x = Mathf.FloorToInt((pos.x - refTF.position.x) / size);
+        int y = Mathf.FloorToInt((pos.y - refTF.position.y) / size);
+       
         if ((x >= 0 && x < gridArray.GetLength(0)) && (y >= 0 && y < gridArray.GetLength(1)))
         {
             return gridArray[x, y];

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Analytics;
 
 public class BuildingGrid : MonoBehaviour
 {   
@@ -69,6 +70,7 @@ public class BuildingGrid : MonoBehaviour
 
         if(Input.GetKey(KeyCode.M))
         {
+            
             GridObject gridValue = grid.GetValue(mainCam.ScreenToWorldPoint(Input.mousePosition));
             
             if (gridValue == null) return;
@@ -118,10 +120,10 @@ public class BuildingGrid : MonoBehaviour
                 for (int y = 0; y < grid.textArray.GetLength(1); y++)
                 {
                     grid.textArray[x, y].gameObject.SetActive(true);
-                   // Debug.DrawLine((grid.GetPositionXY(x, y)), (grid.GetPositionXY(x + 1, y)), UnityEngine.Color.red, 1f);
-                   // Debug.DrawLine(grid.GetPositionXY(x, y), grid.GetPositionXY(x, y + 1), UnityEngine.Color.red, 1f);
-                   // Debug.DrawLine(grid.GetPositionXY(x + 1, y + 1), grid.GetPositionXY(x, y + 1), UnityEngine.Color.red, 1f);
-                   // Debug.DrawLine(grid.GetPositionXY(x + 1, y + 1), grid.GetPositionXY(x + 1, y), UnityEngine.Color.red, 1f);
+                    Debug.DrawLine((grid.GetPositionXY(x, y)), (grid.GetPositionXY(x + 1, y)), UnityEngine.Color.red, 1f);
+                    Debug.DrawLine(grid.GetPositionXY(x, y), grid.GetPositionXY(x, y + 1), UnityEngine.Color.red, 1f);
+                    Debug.DrawLine(grid.GetPositionXY(x + 1, y + 1), grid.GetPositionXY(x, y + 1), UnityEngine.Color.red, 1f);
+                    Debug.DrawLine(grid.GetPositionXY(x + 1, y + 1), grid.GetPositionXY(x + 1, y), UnityEngine.Color.red, 1f);
 
 
                 }
@@ -194,7 +196,8 @@ public class BuildingGrid : MonoBehaviour
             go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y, 0f);
             Vector3 scale = go.localScale;
             go.localScale = scale * grid.GetCellSize();
-
+            
+            go.GetComponentInChildren<SpriteRenderer>().sortingOrder = -(gridObject.GetPosition().y+1);
 
 
             BuildingType BuildingType = go.GetComponent<BuildingType>();

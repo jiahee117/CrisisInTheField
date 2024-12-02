@@ -3,12 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Building
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - camera
   - Water
   - UI
   - 
@@ -38,9 +39,15 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 1598989833
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
   - name: Top
     uniqueID: 3508284303
+    locked: 0
+  - name: Player
+    uniqueID: 2690915033
     locked: 0
