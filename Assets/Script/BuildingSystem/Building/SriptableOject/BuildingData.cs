@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "BuildingType", menuName = "ScriptableObjects/BuildingType", order = 0)]
 public class BuildingData: ScriptableObject
 {
+    public Transform prefab;
     public string buildingName;
 
     public int width;

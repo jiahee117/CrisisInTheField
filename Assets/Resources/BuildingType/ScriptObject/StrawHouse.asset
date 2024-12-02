@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 414e88c8693aa1248a0cd107162a50f7, type: 3}
   m_Name: StrawHouse
   m_EditorClassIdentifier: 
+  prefab: {fileID: 4822076318384096575, guid: b3ad6e43d72648d488e7a2606b318347, type: 3}
   buildingName: StrawHouse
   width: 2
   height: 2

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2779262742590909431}
   - component: {fileID: 1811004776637339830}
   m_Layer: 0
-  m_Name: 9-Sliced
+  m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -129,12 +129,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6575d1725e95bb542abf8c3ce06f01b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BuildingData: {fileID: 11400000, guid: 4757494630ab8924e86422a5ef5ad494, type: 2}
-  RecordLocations:
-  - {x: 0, y: 0}
-  - {x: 1, y: 0}
-  - {x: 0, y: 1}
-  - {x: 1, y: 1}
+  buildingData: {fileID: 11400000, guid: 4757494630ab8924e86422a5ef5ad494, type: 2}
+  RecordLocations: []
 --- !u!1001 &7484122552243747472
 PrefabInstance:
   m_ObjectHideFlags: 0

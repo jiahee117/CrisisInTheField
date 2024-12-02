@@ -8,7 +8,18 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class BuildingGrid : MonoBehaviour
-{
+{   
+    private Camera mainCam;
+    private static BuildingGrid instance;
+    public static BuildingGrid Instance
+    {
+        get{return instance;}
+    }
+    
+    private BuildingDatas bulidngDatas;
+    public Transform buildingGhost;
+    private Transform buildingGhostModel;
+    private SpriteRenderer BuildingGhostspriteRenderer;
     public Grid<GridObject> grid;
     public static event EventHandler<OnPlacedEventArgs> OnPlaced;
     public class OnPlacedEventArgs : EventArgs
@@ -19,19 +30,28 @@ public class BuildingGrid : MonoBehaviour
 
     }
 
-    public GameObject currentSelectedBuilding;
-
-    public Dictionary<string,GameObject> buildings;
     
+    private BuildingData currentSelectedBuilding;
+
+    void Awake()
+    {
+        instance = this;
+        mainCam = Camera.main;
+        bulidngDatas = Resources.Load<BuildingDatas>("BuildingType/ScriptObject/"+typeof(BuildingDatas).Name);
+        currentSelectedBuilding = bulidngDatas.list[0];
+
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         
         grid = new Grid<GridObject>(23, 17, 5, this.transform, (Grid<GridObject> g ,int x,int y )=> new GridObject(g,x,y) );
-        new Pathfinding(30, 25, 5, null);
+        
         grid.ShowTextArray();
-        Pathfinding.Instance.OnPlaced += CheckWalkable;
+        
+        buildingGhostModel = buildingGhost.GetChild(0);
+        BuildingGhostspriteRenderer = buildingGhostModel.GetComponent<SpriteRenderer>();
     }
 
 
@@ -40,22 +60,56 @@ public class BuildingGrid : MonoBehaviour
     {
         
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            GridObject gridValue = grid.GetValue(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-            
-            if (gridValue == null) return;
-            PlaceObject(gridValue);
-        }
+       
         if (Input.GetMouseButtonDown(1))
         {
             Remove();
             
         }
+
+        if(Input.GetKey(KeyCode.M))
+        {
+            GridObject gridValue = grid.GetValue(mainCam.ScreenToWorldPoint(Input.mousePosition));
+            
+            if (gridValue == null) return;
+            buildingGhost.position = grid.GetWorldPosition(gridValue.GetPosition().x,gridValue.GetPosition().y);
+            BuildingGhostspriteRenderer.sprite =  currentSelectedBuilding.sprite;
+            
+            buildingGhostModel.localScale = currentSelectedBuilding.prefab.GetChild(0).localScale;
+            
+            //Debug.Log($"Prefab Scale: {currentSelectedBuilding.prefab.GetChild(0).localScale}");
+            //Debug.Log($"Building Ghost Model Scale: {buildingGhostModel.localScale}");
+
+            Vector3 scale = Vector3.one;
+            buildingGhost.localScale = scale * grid.GetCellSize();
+
+            if(!CheckCanPlace(gridValue))
+            {
+                BuildingGhostspriteRenderer.color = new UnityEngine.Color(0.8773f,0.5f,0.5f,0.4431373f);
+            }else BuildingGhostspriteRenderer.color = new UnityEngine.Color(0.7773f,0.9471698f,0.9468387f,0.4431373f);
+            
+            buildingGhost.gameObject.SetActive(true);
+        
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (gridValue == null) return;
+                PlaceObject(gridValue);
+            }
+            
+        }
         
 
 
+        if(Input.GetKeyDown(KeyCode.K))
+        {
+            currentSelectedBuilding = bulidngDatas.list[1];
 
+        }
+        if(Input.GetKeyDown(KeyCode.J))
+        {
+            currentSelectedBuilding = bulidngDatas.list[0];
+
+        }
 
         if(Input.GetKeyDown(KeyCode.M)) 
         {
@@ -64,10 +118,10 @@ public class BuildingGrid : MonoBehaviour
                 for (int y = 0; y < grid.textArray.GetLength(1); y++)
                 {
                     grid.textArray[x, y].gameObject.SetActive(true);
-                    Debug.DrawLine((grid.GetPositionXY(x, y)), (grid.GetPositionXY(x + 1, y)), UnityEngine.Color.red, 1f);
-                    Debug.DrawLine(grid.GetPositionXY(x, y), grid.GetPositionXY(x, y + 1), UnityEngine.Color.red, 1f);
-                    Debug.DrawLine(grid.GetPositionXY(x + 1, y + 1), grid.GetPositionXY(x, y + 1), UnityEngine.Color.red, 1f);
-                    Debug.DrawLine(grid.GetPositionXY(x + 1, y + 1), grid.GetPositionXY(x + 1, y), UnityEngine.Color.red, 1f);
+                   // Debug.DrawLine((grid.GetPositionXY(x, y)), (grid.GetPositionXY(x + 1, y)), UnityEngine.Color.red, 1f);
+                   // Debug.DrawLine(grid.GetPositionXY(x, y), grid.GetPositionXY(x, y + 1), UnityEngine.Color.red, 1f);
+                   // Debug.DrawLine(grid.GetPositionXY(x + 1, y + 1), grid.GetPositionXY(x, y + 1), UnityEngine.Color.red, 1f);
+                   // Debug.DrawLine(grid.GetPositionXY(x + 1, y + 1), grid.GetPositionXY(x + 1, y), UnityEngine.Color.red, 1f);
 
 
                 }
@@ -75,6 +129,7 @@ public class BuildingGrid : MonoBehaviour
         }
         if (Input.GetKeyUp(KeyCode.M))
         {
+            buildingGhost.gameObject.SetActive(false);
             for (int x = 0; x < grid.textArray.GetLength(0); x++)
             {
                 for (int y = 0; y < grid.textArray.GetLength(1); y++)
@@ -120,8 +175,8 @@ public class BuildingGrid : MonoBehaviour
 
                 gridObTemp.RemoveObject();
 
-                PathNode pathNode = Pathfinding.Instance.grid.GetValue(grid.GetWorldPosition(gridObTemp.GetPosition().x, gridObTemp.GetPosition().y));
-                pathNode.walkable = true;
+               // PathNode pathNode = Pathfinding.Instance.grid.GetValue(grid.GetWorldPosition(gridObTemp.GetPosition().x, gridObTemp.GetPosition().y));
+               // pathNode.walkable = true;
             }
 
 
@@ -133,12 +188,12 @@ public class BuildingGrid : MonoBehaviour
 
     void PlaceObject(GridObject gridObject)
     {
-        if (gridObject != null&&checkCanPlace(gridObject))
+        if (gridObject != null&&CheckCanPlace(gridObject))
         {
-            GameObject go = Instantiate<GameObject>(currentSelectedBuilding, grid.GetWorldPosition(gridObject.GetPosition().x, gridObject.GetPosition().y), Quaternion.identity);
+            Transform go = Instantiate(currentSelectedBuilding.prefab, grid.GetWorldPosition(gridObject.GetPosition().x, gridObject.GetPosition().y), Quaternion.identity);
             go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y, 0f);
-            Vector3 scale = go.transform.localScale;
-            go.transform.localScale = scale * grid.GetCellSize();
+            Vector3 scale = go.localScale;
+            go.localScale = scale * grid.GetCellSize();
 
 
 
@@ -148,9 +203,9 @@ public class BuildingGrid : MonoBehaviour
             for(int i = 0; i < locationsincluded.Length; i++)
             {
                 GridObject gridObTemp = grid.GetValue(locationsincluded[i].x, locationsincluded[i].y);
-                gridObTemp.PlaceObject(go);
-                PathNode pathNode = Pathfinding.Instance.grid.GetValue(grid.GetWorldPosition(gridObTemp.GetPosition().x, gridObTemp.GetPosition().y));
-                pathNode.walkable = false;
+                gridObTemp.PlaceObject(go.gameObject);
+                //PathNode pathNode = Pathfinding.Instance.grid.GetValue(grid.GetWorldPosition(gridObTemp.GetPosition().x, gridObTemp.GetPosition().y));
+                //pathNode.walkable = false;
             }
 
 
@@ -169,7 +224,7 @@ public class BuildingGrid : MonoBehaviour
         }
     }
 
-    bool checkCanPlace(GridObject gridValue)
+    bool CheckCanPlace(GridObject gridValue)
     {
 
 
