@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -19,12 +20,17 @@ public class PlayerController : MonoBehaviour
         playerAction = GetComponent<PlayerAction>();
     }
 
+    void FixedUpdate()
+    {
+        playerMovement.Move();
+
+    }
+
     // Update is called once per frame
     void Update()
     {
         playerMovement.Flip(playerAction.moveDirectionPlayer.x);  // Flip player horizontally based on mouseposition
 
-        playerMovement.Move();
 
         if (Input.GetMouseButtonDown(0)) 
         {

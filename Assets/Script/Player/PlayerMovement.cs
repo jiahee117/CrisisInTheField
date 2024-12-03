@@ -12,26 +12,22 @@ public class PlayerMovement : MonoBehaviour
 {
     
     SpriteRenderer spriteRenderer;
+    Rigidbody2D rigidbody2D;
     public float moveSpeed;
     Grid<GridObject> buildingGrid;
     public Vector2 vector;
-
+    public Vector2 dir;
     // Start is called before the first frame update
     void Start()
     {
-       
+        rigidbody2D = GetComponentInChildren<Rigidbody2D>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         buildingGrid = BuildingGrid.Instance.grid;
     }
 
     void Update()
     {
-        GridObject gridObject = buildingGrid.GetValue(this.transform.position);
-        if(gridObject!= null)
-        {
-             vector = gridObject.GetPosition();
-            spriteRenderer.sortingOrder = -buildingGrid.GetValue(this.transform.position).GetPosition().y;
-        }
+        
     }
 
     float dis;
@@ -50,11 +46,21 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     public void Move()
     {
+        GridObject gridValue = buildingGrid.GetValue(transform.position);
+
+        if(gridValue!=null)spriteRenderer.sortingOrder = -(gridValue.GetPosition().y);
         
         float x = Input.GetAxis("Horizontal");
         float y = Input.GetAxis("Vertical");
         
-        transform.position += new Vector3(x,y,0)* moveSpeed;
+
+      //  if (Mathf.Abs(x) < 0.1f) x = 0; // Dead zone for Horizontal
+     //   if (Mathf.Abs(y) < 0.1f) y = 0; // Dead zone for Vertical
+
+
+
+        dir = transform.position + new Vector3(x,y).normalized*moveSpeed;
+        rigidbody2D.MovePosition(dir);
         
         //Flip(x);
     }

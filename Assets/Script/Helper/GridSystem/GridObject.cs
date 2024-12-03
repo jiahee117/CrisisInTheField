@@ -8,6 +8,7 @@ public class GridObject
 
     Vector2Int position; 
     private GameObject go;
+    
     bool isPlaced;
     private Grid<GridObject> grid;
     List<GridObject> gridPlaces;
