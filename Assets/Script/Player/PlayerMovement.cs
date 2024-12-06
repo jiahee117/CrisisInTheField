@@ -17,17 +17,29 @@ public class PlayerMovement : MonoBehaviour
     Grid<GridObject> buildingGrid;
     public Vector2 vector;
     public Vector2 dir;
+    float y;
+    float x;
     // Start is called before the first frame update
     void Start()
     {
         rigidbody2D = GetComponentInChildren<Rigidbody2D>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         buildingGrid = BuildingGrid.Instance.grid;
+        x=0;y=0;
     }
 
     void Update()
     {
+        GridObject gridValue = buildingGrid.GetValue(transform.position);
+
+        if(gridValue!=null)spriteRenderer.sortingOrder = -(gridValue.GetPosition().y);
         
+         x = Input.GetAxis("Horizontal");
+         y = Input.GetAxis("Vertical");
+
+        
+
+         dir = new Vector3(x,y).normalized*moveSpeed;
     }
 
     float dis;
@@ -46,21 +58,18 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     public void Move()
     {
-        GridObject gridValue = buildingGrid.GetValue(transform.position);
-
-        if(gridValue!=null)spriteRenderer.sortingOrder = -(gridValue.GetPosition().y);
+         if (Input.GetButton("Horizontal") || Input.GetButton("Vertical"))
+    {
         
-        float x = Input.GetAxis("Horizontal");
-        float y = Input.GetAxis("Vertical");
-        
-
+        rigidbody2D.velocity = dir;
+    }
+    else
+    {
+        rigidbody2D.velocity = Vector3.zero; // Stop immediately when input is released
+    }
       //  if (Mathf.Abs(x) < 0.1f) x = 0; // Dead zone for Horizontal
      //   if (Mathf.Abs(y) < 0.1f) y = 0; // Dead zone for Vertical
-
-
-
-        dir = transform.position + new Vector3(x,y).normalized*moveSpeed;
-        rigidbody2D.MovePosition(dir);
+        
         
         //Flip(x);
     }

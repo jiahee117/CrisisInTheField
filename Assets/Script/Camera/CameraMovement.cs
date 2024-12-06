@@ -20,6 +20,6 @@ public class CameraMovement : MonoBehaviour
 
     private void LateUpdate()
     {
-        m_Camera.transform.localPosition = new Vector3( m_Transform.position.x,m_Transform.position.y,0);
+        m_Camera.transform.position = new Vector3( m_Transform.position.x,m_Transform.position.y,transform.position.z);
     }
 }
